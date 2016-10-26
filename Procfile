@@ -1,1 +1,1 @@
-worker: python check_ev_updates.py
+web: web: python server.py
