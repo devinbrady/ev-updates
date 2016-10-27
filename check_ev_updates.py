@@ -11,7 +11,7 @@ slack_client = SlackClient(os.environ["SLACK_TOKEN"])
 
 def main():
 
-    # slack_channel_name = 'vespa' # testing
+    slack_channel_name = 'vespa' # testing
     slack_channel_name = 'ev-data-updates'
     
     # todays_clark_url = 'https://elections.clarkcountynv.gov/VoterRequests/EVMB/ev20161024.zip'
@@ -24,7 +24,7 @@ def main():
     print 'Looking for file: ' + todays_washoe_url
 
     clark_file_available = False
-    washoe_file_available = True
+    washoe_file_available = False
 
     while not clark_file_available or not washoe_file_available: 
 
