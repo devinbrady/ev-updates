@@ -16,6 +16,12 @@ def main():
 
     slack_channel_name = 'vespa' # testing
     # slack_channel_name = 'ev-data-updates'
+
+    send_message(slack_channel_name, 'Jefferson County', 'This is a cool website: http://google.com')
+
+    return None
+
+def other_main():
     
     # todays_clark_url = 'https://elections.clarkcountynv.gov/VoterRequests/EVMB/ev20161024.zip'
     todays_clark_url = 'https://elections.clarkcountynv.gov/VoterRequests/EVMB/ev' + time.strftime("%Y%m%d") + '.zip'
