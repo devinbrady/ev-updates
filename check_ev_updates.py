@@ -12,7 +12,7 @@ slack_client = SlackClient(os.environ["SLACK_TOKEN"])
 def main():
 
     slack_channel_name = 'vespa' # testing
-    slack_channel_name = 'ev-data-updates'
+    # slack_channel_name = 'ev-data-updates'
     
     # todays_clark_url = 'https://elections.clarkcountynv.gov/VoterRequests/EVMB/ev20161024.zip'
     todays_clark_url = 'https://elections.clarkcountynv.gov/VoterRequests/EVMB/ev' + time.strftime("%Y%m%d") + '.zip'
