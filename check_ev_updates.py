@@ -8,37 +8,31 @@ from StringIO import StringIO
 from slackclient import SlackClient
 import pandas as pd
 
-
+# Save your Slack token as an environment variable
 slack_client = SlackClient(os.environ["SLACK_TOKEN"])
 
 def main():
 
     slack_channel_name = 'ev-data-updates'
-    # slack_channel_name = 'vespa'
-    
-    # todays_clark_url = 'https://elections.clarkcountynv.gov/VoterRequests/EVMB/ev20161027.zip'
+    # slack_channel_name = 'vespa' # channel for debugging 
+
+    # Patterns for URLs
     todays_clark_url = 'https://elections.clarkcountynv.gov/VoterRequests/EVMB/ev' + time.strftime("%Y%m%d") + '.zip'
-
     clark_av_url = 'http://elections.clarkcountynv.gov/voterrequests/evmb/mbreq16G.zip'
-
-    # todays_washoe_url = 'https://www.washoecounty.us/voters/files/16_general_ab_ev_list/16_gen_ab_ev_list_10_24_16.xlsx'
     todays_washoe_url = 'https://www.washoecounty.us/voters/files/16_general_ab_ev_list/16_gen_ab_ev_list_' + time.strftime("%m_%d") + '_16.xlsx'
 
-    # print 'Looking for file: ' + todays_clark_url
-    # print 'Looking for file: ' + todays_washoe_url
-
-    clark_ev_file_available = True
+    # These should all be set to False at the start of the day
+    # False means we'll check for them
+    clark_ev_file_available = False
     clark_av_file_available = False
-    washoe_file_available = True
+    washoe_file_available = False
 
-
-    # print time.ctime(os.path.getmtime('/Users/devin/Downloads/MBREQ16G-2.txt'))
-
-    
-
+    # Check for files every 60 seconds until they are all available
     while not clark_ev_file_available or not clark_av_file_available or not washoe_file_available: 
 
         print '\n' + time.strftime("%I:%M:%S %p")
+
+        # Only check a county in the hour when they've typically posted files
         hour = int(time.strftime('%H'))
 
         if not clark_ev_file_available and hour >= 21: 
@@ -67,7 +61,11 @@ def main():
         time.sleep(60) 
 
 
+
 def send_message(channel_id, user, message):
+    """
+    Send a message to a Slack channel
+    """
     
     response = slack_client.api_call(
         "chat.postMessage",
@@ -84,6 +82,10 @@ def send_message(channel_id, user, message):
 
 
 def poll_clark(url):
+    """
+    Check when the Clark County file was last modified. 
+    If the modified_at for the URL is today, return True. otherwise False
+    """
 
     print '\nrequesting : ' + url
     r = requests.get(url, stream=True)
@@ -92,13 +94,15 @@ def poll_clark(url):
     print 'modified at: {}'.format(modified_at)
     
     return modified_at.date() == pd.to_datetime('today').date()
-    # return modified_at.date() == pd.to_datetime('2016-10-27').date()
-
 
 
 def poll_washoe(url): 
+    """
+    Check whether the Washoe County file exists. 
+    If the URL exists, return True. otherwise False. 
 
-    # todo: find a way to handle timeouts
+    TODO: find a way to handle timeouts
+    """
 
     print 'requesting : ' + url
     r = requests.get(url, stream=True)
